@@ -2,9 +2,11 @@
 
 This is forked from [sandbach's repo](https://github.com/sandbach/bsl-gcse), and lets you input your own words into the file bslvocabv1.csv. Please go to their repo to learn more!
 
-[Anki](https://docs.ankiweb.net)
-[SignBSL.com](https://www.signbsl.com/)
-[Anki documentation about importing notes with CSV files](https://docs.ankiweb.net/importing/text-files.html)
+useful links:
+
+- [Anki](https://docs.ankiweb.net)
+- [SignBSL.com](https://www.signbsl.com/)
+- [Anki documentation about importing notes with CSV files](https://docs.ankiweb.net/importing/text-files.html)
 
 # Input CSV
 
