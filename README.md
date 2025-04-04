@@ -1,56 +1,23 @@
 # BSL Anki Deck
 
-This is an [Anki](https://docs.ankiweb.net) deck of British Sign Language (BSL) signs sorted by frequency, based on the [GCSE vocabulary](https://www.signbsl.com/gcse-vocabulary) section of [SignBSL.com](https://www.signbsl.com/).
+This is forked from [sandbach's repo](https://github.com/sandbach/bsl-gcse), and lets you input your own words into the file bslvocabv1.csv. Please go to their repo to learn more!
 
-The deck itself can be found at [BSL GCSE.apkg](BSL%20GCSE.apkg).
+[Anki](https://docs.ankiweb.net)
+[SignBSL.com](https://www.signbsl.com/)
+[Anki documentation about importing notes with CSV files](https://docs.ankiweb.net/importing/text-files.html)
 
-## HOWTO
+# Input CSV
 
-Requirements:
+The input file (inputwords.csv) has different words, each having a ranking (essential, more frequent, frequent, less frequent), which determines the order of the Anki cards. They also have a category. The code should work without these, if you just want to add a word per line.
 
-- A Python interpreter
-- FFmpeg
-- Anki desktop
+# Variables
 
-The main Python [script](script.py) is a web scraper that follows each link on the GCSE Vocabulary page and downloads the information for one Anki note for each of the headings (`h1` or `h2`) on the page. In the interest of simplicity, the video URL that it chooses is always that of the first video that follows the heading. For example, on the page for the word [finish](https://www.signbsl.com/sign/finish), the script finds a note for each of the three senses, and chooses the first videos by SignStation, the University of Wolverhampton, and SignStation, respectively. It downloads and compresses the videos, placing them in the [appropriate directory](https://docs.ankiweb.net/importing/text-files.html#importing-media).
+you can choose to delete the current words on the output csv or not by toggling the variable csv_cleared_at_start.
+you can change what the input file and output file is by changing INPUT_CSV and OUTPUT_CSV.
+I haven't added a way to not include any missed words, but these are easily deleteable in Anki, as all missed words are tagged with 'NOTFOUND'.
 
-There is a great deal of variety within BSL, and this is reflected in the number of different signs shown for a single English word on SignBSL.com. For this reason, the video chosen for a particular sign by the script may not be one you have been taught. See below for how to add a different video to a note.
+# Output CSV
 
-Anki supports importing notes en masse with CSV files. The script writes to a CSV file according to the requirements described in the [Anki documentation](https://docs.ankiweb.net/importing/text-files.html), where the fields are as follows:
+the output csv has the following items: headword, definition, example, video_url, video_title, url, tags
 
-1. Headword
-2. Definition
-3. Example
-4. Video (a filename based on the video URL)
-5. VideoURL
-6. VideoTitle
-7. URL
-8. Tags
-
-### Video compression
-
-While the videos on SignBSL.com are already fairly small and well-compressed, the script uses FFmpeg to compress them further, so as to minimize the size of the final deck. The incantation used is as follows:
-
-``` shell
-ffmpeg -i "input.mp4" -vcodec libx265 -crf 32 "output.mp4"
-```
-
-The larger the number following `-crf`, the greater the rate of compression.
-
-### Word frequency
-
-The notes in the deck ought to be in order of frequency, so that users see the most common signs first. I do not have data on the frequency of signs in BSL, so I am using English word frequency data as a proxy. I found an Excel spreadsheet of the 5000 most frequent lemmas in English at www.wordfrequency.info, converted the relevant sheet to tab-separated values with VisiData, and used Awk to obtain a [file of words](frequency.txt) and their frequency rankings.
-
-## Possible modifications
-
-- If the Anki `collection.media` directory you want to use is not found under the default `User 1`, you will have to amend [script.py](script.py) to reflect the correct filepath.
-
-- To add notes for new signs, use the function `add_signs` in the Python script, and run `download_videos` on the resulting CSV file to download and compress the first video for each definition. You can then import the CSV file into Anki, making sure that all the fields correspond as described above, and that 'Allow HTML in fields' is selected. Of course, you can also add notes manually on Anki.
-
-- To change the video associated with a particular card, find the URL of the video you want and modify the relevant part of the CSV file. Then, use `download_videos` as described above.
-
-- In terms of file size, the deck is already fairly small. If you want to make it extremely tiny, at the cost of needing to download the videos when they appear for review, you could eschew the `download_videos` step and replace `{{Video}}` in the Anki card templates with the following:
-
-``` html
-<iframe src="{{VideoURL}}"></iframe>
-```
+if a word cant be found on signbsl, it's definition will be 'TRANSLATION NOT FOUND', and it will also be tagged 'NOTFOUND'.
